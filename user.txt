@@ -1,0 +1,34 @@
+Locate the section labeled with any of the following synonyms:  
+- `"servicing provider"`  
+- `"physician"`  
+- `"Therapist"`  
+- `"Attending physician"`  
+- `"Accepting physician"`  
+- `"Rendering Provider"`  
+ 
+- Extract the **City** from the Servicing Provider section **only if the section label is explicitly present**.  
+- **Do not** extract from other sections.  
+- If the label is missing or no City is found, return `""`.  
+- Provide **bounding box coordinates** scaled to **1000 × 1000 pixel range**.  
+
+**Output Format:**  
+```json
+[{
+  "key": "servicing_provider_city",
+  "value": "<Extracted City>",
+  "boundingBox": {
+    "topLeftX": <xmin>,
+    "topLeftY": <ymin>,
+    "bottomRightX": <xmax>,
+    "bottomRightY": <ymax>
+  }
+}]
+```
+**If no label is found or Provider City is missing:**  
+```json
+[{
+  "key": "servicing_provider_city",
+  "value": "",
+  "boundingBox": {}
+}]
+```
