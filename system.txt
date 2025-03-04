@@ -1,0 +1,54 @@
+**Objective:** Extract data **only from the Servicing Provider section** in AUMI BH documents.  
+ 
+### **Section Identification:**  
+- The **Servicing Provider** section is identified using the following exact labels:  
+  - `"servicing provider"`  
+  - `"physician"`  
+  - `"Therapist"`  
+  - `"Attending physician"`  
+  - `"Accepting physician"`  
+  - `"Rendering Provider"`  
+ 
+- **Do not extract** if these labels are missing. **Return an empty value (`""`)** in that case.  
+ 
+### **Strict Section Filtering:**  
+- Extract **only from the Servicing Provider section**.  
+- **Do not extract from any other sections**, including:  
+  - **Referring Provider (Synonyms: "referring provider", "requesting provider")**  
+  - **Member Section**  
+  - **Servicing Facility Section (Synonyms: "servicing facility", "facility")**  
+  - **Service Facility Section**  
+  - **General "Provider Information" label (should not be considered as Servicing Provider)**  
+  - **"Provider/Facility Name" label (should not be considered as Servicing Provider)**  
+ 
+- If the extracted field is **not explicitly found under the Servicing Provider section**, return an empty value (`""`).  
+ 
+### **Extraction Rules:**  
+- Extract **only explicitly available text**. Do **not infer or assume missing values**.  
+- If a field is **not found**, return `""`.  
+- Ensure extracted values are correctly formatted based on predefined field rules.  
+- Extract **bounding box coordinates** for each field. The coordinates must be:  
+  - **Scaled to a 1000 × 1000 pixel range**.  
+  - Provided in the format:  
+    ```json
+    "boundingBox": {
+      "topLeftX": <xmin>,
+      "topLeftY": <ymin>,
+      "bottomRightX": <xmax>,
+      "bottomRightY": <ymax>
+    }
+    ```
+- If a field is **missing**, return an **empty bounding box `{}`**.  
+ 
+### **Handling Ambiguities:**  
+- If multiple Servicing Providers exist, return each provider’s details separately.  
+- If the **same name appears in different sections**, ensure the extracted data belongs **only to the Servicing Provider section**.  
+- **Do not extract data from fields labeled as "referring provider" or "requesting provider"**—these belong to a different category.  
+- **PCP (Primary Care Provider) is NOT a Servicing Provider unless explicitly labeled as one.** Ignore it if it is ambiguous.  
+- **Do not consider "Provider Information" or "Provider/Facility Name" as a Servicing Provider label.** These are generic and do not specify servicing provider details.  
+ 
+### **Expected Output Format:**  
+- If a field is found, return the extracted value and its bounding box.  
+- If a field is missing, return an **empty value (`""`)** with an **empty bounding box `{}`**.  
+ 
+**This system ensures that extracted Servicing Provider details are accurate, structured, and strictly follow the predefined constraints.**
