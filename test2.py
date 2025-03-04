@@ -99,5 +99,6 @@ system_prompt = open('system.txt','r').read()
 for i in range(20):
     print(i)
     data = inference_by_krypton(img_path,model,processor,system_prompt,user_pompt)
+    print("memory usage printed using torch.hpu.memory_usage()")
     print(torch.hpu.memory_usage())
 print(data)
