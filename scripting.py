@@ -48,25 +48,25 @@ for index, row in df.iterrows():
 
 print("\nClassifier Requests Completed!")
 
-# ### SECOND LOOP: Extractor Requests
-# print("\nStarting Extractor Requests...")
-# for index, row in df.iterrows():
-#     response = row["response"]
-#     extractor_payload = {
-#         "model": "extractor",
-#         "messages": [
-#             {"role": "system", "content": "Extract agricultural facts from the response."},
-#             {"role": "user", "content": response}
-#         ],
-#         "max_tokens": 1024,
-#         "temperature": 0,
-#         "seed": 42
-#     }
-#     extractor_result, extractor_time = send_request(extractor_payload)
-#     extractor_times.append(extractor_time)
-#     print(f"Query {index+1}: Extractor Time = {extractor_time:.4f} sec")
+### SECOND LOOP: Extractor Requests
+print("\nStarting Extractor Requests...")
+for index, row in df.iterrows():
+    response = row["response"]
+    extractor_payload = {
+        "model": "extractor",
+        "messages": [
+            {"role": "system", "content": "Extract agricultural facts from the response."},
+            {"role": "user", "content": response}
+        ],
+        "max_tokens": 1024,
+        "temperature": 0,
+        "seed": 42
+    }
+    extractor_result, extractor_time = send_request(extractor_payload)
+    extractor_times.append(extractor_time)
+    print(f"Query {index+1}: Extractor Time = {extractor_time:.4f} sec")
 
-# print("\nExtractor Requests Completed!")
+print("\nExtractor Requests Completed!")
 
 ### THIRD LOOP: Relevance Requests
 print("\nStarting Relevance Requests...")
