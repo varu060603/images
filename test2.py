@@ -82,7 +82,7 @@ def krypton_load():
         
         # Load model with bfloat16 precision
         model = GaudiQwen2VLForConditionalGeneration.from_pretrained(
-            "Qwen/Qwen2-VL-7B-Instruct", torch_dtype=torch.bfloat16, device_map="auto"
+            "Qwen/Qwen2-VL-7B-Instruct", torch_dtype=torch.bfloat16
         )
         
         # Move model to HPU and optimize for HPU execution
