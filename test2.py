@@ -70,27 +70,39 @@ def inference_by_krypton(image_path: str, vision_model, vision_processor, system
         # logger.error(f"Exception occurred during Krypton inference for the file {image_path}: {ex}")
         raise ex
 
-
-
-
-
-device = torch.device("hpu")
-
-model = GaudiQwen2VLForConditionalGeneration.from_pretrained(
-            "Qwen/Qwen2-VL-7B-Instruct", torch_dtype=torch.bfloat16
+def krypton_load():
+    """
+    Initialize and load the Krypton model and processor on HPU.
+    
+    Returns:
+        tuple: Loaded model and processor
+    """
+    try:
+        logger.info("Initializing Krypton model (Qwen2-VL-7B-Instruct) on HPU...")
+        
+        # Load model with bfloat16 precision
+        model = GaudiQwen2VLForConditionalGeneration.from_pretrained(
+            "Qwen/Qwen2-VL-7B-Instruct", torch_dtype=torch.bfloat16, device_map="auto"
         )
         
-# Move model to HPU and optimize for HPU execution
-model = model.to(device)
-wrap_in_hpu_graph(model)
-
-# Load processor with pixel constraints
-# processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-7B-Instruct")
-
-min_pixels = 256*28*28
-max_pixels = 2560*28*28
-processor = AutoProcessor.from_pretrained('Qwen/Qwen2-VL-72B-Instruct-AWQ',min_pixels=min_pixels,max_pixels=max_pixels)
-
+        # Move model to HPU and optimize for HPU execution
+        device = torch.device("hpu")
+        model = model.to(device)
+        wrap_in_hpu_graph(model)
+        
+        # Load processor with pixel constraints
+        min_pixels = 256*28*28
+        max_pixels = 2560*28*28
+        
+        processor = AutoProcessor.from_pretrained('Qwen/Qwen2-VL-7B-Instruct',min_pixels=min_pixels,max_pixels=max_pixels)
+        
+        logger.info("Krypton model successfully initialized on HPU.")
+        return model, processor
+    
+    except Exception as ex:
+        logger.error("Error during Krypton model initialization:", exc_info=True)
+        raise ex
+model , processor = krypton_load()
 
 img_path = 'SYNT_166730538_1_0.jpg'
 user_pompt = open('user.txt','r').read()
