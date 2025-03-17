@@ -35,7 +35,7 @@ for index, row in df.iterrows():
     classifier_payload = {
         "model": "classifier",
         "messages": [
-            {"role": "system", "content": "Classify if the response fully answers the question. Output 1 if yes, 0 otherwise."},
+            {"role": "system",  "content": "You are an agriculture expert.  Your job is to carefully read a question and an answer, and classify if the answer completely answers the question.\n\nIf the answer is relevant and complete to the provided question, output 1, otherwise output 0.  DO NOT output any explanation or prefix or suffix to the score.\n"},
             {"role": "user", "content": f"Q: {query}\nA: {response}"}
         ],
         "max_tokens": 5,
@@ -55,7 +55,7 @@ for index, row in df.iterrows():
     extractor_payload = {
         "model": "extractor",
         "messages": [
-            {"role": "system", "content": "Extract agricultural facts from the response."},
+            {"role": "system", "content": "You are an agriculture expert.  Your job is to extract all agricultural facts from a user text;  ignore the follow-up questions at the end, if any, and ignore all non-agricultural information.\nEach fact must be self-contained without pro-nouns or other contextual references.\nDO NOT INCLUDE any extra information not present in the  message.\n\n{\"type\": \"object\", \"properties\": {\"facts\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}}, \"required\": [\"facts\"], \"additionalProperties\": false}\n"},
             {"role": "user", "content": response}
         ],
         "max_tokens": 1024,
@@ -75,7 +75,7 @@ for index, row in df.iterrows():
     relevance_payload = {
         "model": "relevance",
         "messages": [
-            {"role": "system", "content": "Determine if the fact is relevant to the query. Output 1 if yes, 0 otherwise."},
+            {"role": "system", "content": "You are an agriculture expert.  Your job is to carefully read a question and fact from an answer to the question,\nand decide if the fact is relevant to the question or not.\n\nIf the fact is relevant to the provided question, output 1, otherwise output 0.  DO NOT output any explanation or prefix to the score.\n"},
             {"role": "user", "content": f"Q: {query}\nA: {response}"}
         ],
         "max_tokens": 5,
